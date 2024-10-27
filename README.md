@@ -65,7 +65,7 @@ The system also allows the DB to be very easily swapped out by using GORM. To sw
 
 **Improvements and suggestions:**
 
-**1.⁠ ⁠Configs:** Due to shortage of time, I couldn't add .env and use that to connect to db. If I had more time, I would have added a config file which first gets all the config variables, which could come from an env file, a yaml or even the command line and set a config object which would be returned to main. Main would then use this to connect to db, get the gateways ready.
+**1.⁠ ⁠Configs:** Due to shortage of time, I couldn't properly handle configs. If I had more time, I would have added a config file which first gets all the config variables, which could come from an env file, a yaml or even the command line and set a config object which would be returned to main. Main would then use this to connect to db, get the gateways ready.
 
 **2.⁠ ⁠Tests:** I could not test the system too well, only a few basic test cases have been added. Expanding on those a very well tested code should be created.
 
