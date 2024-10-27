@@ -46,8 +46,11 @@ Gateways are using the factory pattern to allow for quickly and easily adding su
 
 The code allows for extensibility and new gateways can be added very easily to the system. Here's how:
 1.⁠ ⁠Create a new gateway ⁠ `gatewayC.go` ⁠ in ⁠ `pkg/gateway/ `
+
 2.⁠ ⁠Implement the SendDeposit and SendWithdraw functions of the payment gateway interface by adding logic to call external gateway
+
 3.⁠ ⁠Add the new gateway to the gateway_factory.go
+
 4.⁠ ⁠Add a new webhook route and controller to accept events from the new gateway
 
 The system also allows the DB to be very easily swapped out by using GORM. To switch to a new db:
