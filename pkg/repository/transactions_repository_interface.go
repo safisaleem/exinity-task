@@ -9,4 +9,5 @@ type TransactionsRepository interface {
 	GetAllCompletedDepositsByUserID(userID string) ([]model.Transactions, error)
 	GetAllNonFailedWithdrawalsByUserID(userID string) ([]model.Transactions, error)
 	GetTransactionByExternalIDAndGateway(externalID, gateway string) (*model.Transactions, error)
+	GetAllHeldWithdrawals(userID string) ([]model.Transactions, error)
 }

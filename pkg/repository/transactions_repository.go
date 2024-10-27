@@ -74,3 +74,32 @@ func (t *TransactionsRepositoryImpl) GetTransactionByExternalIDAndGateway(extern
 
 	return &transaction, nil
 }
+
+func (t *TransactionsRepositoryImpl) GetAllHeldWithdrawals(userID string) ([]model.Transactions, error) {
+	var transactions []model.Transactions
+
+	if userID != "" {
+		err := t.Db.Where("type_handle = ? AND status_handle = ? AND user_id = ?",
+			constants.TRANSACTION_TYPE_WITHDRAW,
+			constants.TRANSACTION_STATUS_HELD,
+			userID,
+		).Find(&transactions).Error
+
+		if err != nil {
+			return nil, err
+		}
+
+		return transactions, nil
+	}
+
+	err := t.Db.Where("type_handle = ? AND status_handle = ?",
+		constants.TRANSACTION_TYPE_WITHDRAW,
+		constants.TRANSACTION_STATUS_HELD,
+	).Find(&transactions).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return transactions, nil
+}
