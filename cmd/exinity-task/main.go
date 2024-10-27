@@ -3,6 +3,7 @@ package main
 import (
 	"exinity-task/pkg/config"
 	"exinity-task/pkg/controller"
+	"exinity-task/pkg/gateway"
 	"exinity-task/pkg/model"
 	"exinity-task/pkg/repository"
 	"exinity-task/pkg/router"
@@ -20,11 +21,23 @@ func main() {
 
 	appRouter := router.InitRouter()
 
+	// Initialize repository
 	transactionRepository := repository.NewTransactionRepository(db)
-	transactionService := service.NewTransactionService(transactionRepository)
+
+	// Initialize factory
+	paymentGatewayFactory := gateway.NewPaymentGatewayFactory()
+
+	// Initialize services
+	balanceService := service.NewBalanceService(transactionRepository)
+	transactionService := service.NewTransactionService(transactionRepository, *paymentGatewayFactory, balanceService)
+	webhookService := service.NewWebhookService(transactionRepository)
+
+	// Initialize controllers
 	transactionController := controller.NewTransactionController(transactionService)
+	webhookController := controller.NewWebhookController(webhookService)
 
 	router.InitTransactionRoutes(appRouter, transactionController)
+	router.InitWebhookRoutes(appRouter, webhookController)
 
 	appRouter.Run(":8080")
 }
