@@ -3,7 +3,9 @@ package main
 import "exinity-task/pkg/router"
 
 func main() {
-	router := router.InitRouter()
+	appRouter := router.InitRouter()
 
-	router.Run(":8080")
+	router.InitTransactionRoutes(appRouter)
+
+	appRouter.Run(":8080")
 }
