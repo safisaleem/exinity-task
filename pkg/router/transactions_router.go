@@ -1,17 +1,13 @@
 package router
 
 import (
-	"fmt"
-	"net/http"
+	"exinity-task/pkg/controller"
 
 	"github.com/gin-gonic/gin"
 )
 
-func InitTransactionRoutes(router *gin.Engine) {
+func InitTransactionRoutes(router *gin.Engine, transactionController *controller.TransactionsController) {
 	transactionRouter := router.Group("/transactions")
 
-	transactionRouter.POST("", func(context *gin.Context) {
-		fmt.Println("here")
-		context.JSON(http.StatusOK, "here")
-	})
+	transactionRouter.POST("", transactionController.Create)
 }
