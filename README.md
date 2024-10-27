@@ -45,23 +45,36 @@ Gateways are using the factory pattern to allow for quickly and easily adding su
 **Extensibility:**
 
 The code allows for extensibility and new gateways can be added very easily to the system. Here's how:
+
 1.⁠ ⁠Create a new gateway ⁠ `gatewayC.go` ⁠ in ⁠ `pkg/gateway/ `
+
 2.⁠ ⁠Implement the SendDeposit and SendWithdraw functions of the payment gateway interface by adding logic to call external gateway
+
 3.⁠ ⁠Add the new gateway to the gateway_factory.go
+
 4.⁠ ⁠Add a new webhook route and controller to accept events from the new gateway
 
 The system also allows the DB to be very easily swapped out by using GORM. To switch to a new db:
+
 1.⁠ ⁠Create a new connection function in ⁠ `config/database.go` ⁠ to connect to the new db
+
 2.⁠ ⁠Import the drivers for your db of choice with gorm and connect
+
 3.⁠ ⁠Replace db in main
+
 
 **Improvements and suggestions:**
 
 **1.⁠ ⁠Configs:** Due to shortage of time, I couldn't add .env and use that to connect to db. If I had more time, I would have added a config file which first gets all the config variables, which could come from an env file, a yaml or even the command line and set a config object which would be returned to main. Main would then use this to connect to db, get the gateways ready.
+
 **2.⁠ ⁠Tests:** I could not test the system too well, only a few basic test cases have been added. Expanding on those a very well tested code should be created.
+
 **3.⁠ ⁠Logging:** The code doesn't log events very well. I would like to add a logging package like logrus to log events such as webhook arrival, transaction failed etc.
+
 **4.⁠ ⁠Notifications:** The user should receive email/push notifications etc for transaction updates.
+
 **5.⁠ ⁠Authentication:** The webhook endpoints should not be within the same router, or at least it should be authenticated based on the gateway's docs.
+
 **6. Cloud Deployment:** The Go service has not been dockerized, which would allow for easier deployments on Cloud via Kubernetes.
 
 
