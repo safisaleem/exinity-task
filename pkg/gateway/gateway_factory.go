@@ -1,12 +1,16 @@
 package gateway
 
-type PaymentGatewayFactory struct{}
-
-func NewPaymentGatewayFactory() *PaymentGatewayFactory {
-	return &PaymentGatewayFactory{}
+type PaymentGatewayFactory interface {
+	GetPaymentGateway(providerHandle string) PaymentGateway
 }
 
-func (pgf *PaymentGatewayFactory) GetPaymentGateway(providerHandle string) PaymentGateway {
+type PaymentGatewayFactoryImpl struct{}
+
+func NewPaymentGatewayFactory() PaymentGatewayFactory {
+	return &PaymentGatewayFactoryImpl{}
+}
+
+func (pgf *PaymentGatewayFactoryImpl) GetPaymentGateway(providerHandle string) PaymentGateway {
 	switch providerHandle {
 	case "gatewayA":
 		return &GatewayA{}

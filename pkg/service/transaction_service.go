@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	constants "exinity-task/pkg/contants"
 	"exinity-task/pkg/gateway"
 	"exinity-task/pkg/model"
@@ -39,11 +38,11 @@ func (t *TransactionsServiceImpl) Create(context context.Context, incomingTransa
 		// check if user has enough usable balance. this ensures that the user cant double spend
 		usableBalance, err := t.BalanceService.GetUsableBalance(incomingTransaction.UserID)
 		if err != nil {
-			return err
+			return constants.ErrorInternal
 		}
 
 		if usableBalance < incomingTransaction.Amount {
-			return errors.New("insufficient balance")
+			return constants.ErrorInsufficientBalance
 		}
 	}
 
@@ -52,7 +51,7 @@ func (t *TransactionsServiceImpl) Create(context context.Context, incomingTransa
 	if paymentGateway == nil {
 		transaction.StatusHandle = constants.TRANSACTION_STATUS_FAILED
 		t.TransactionsRepository.Create(&transaction)
-		return errors.New("invalid provider")
+		return constants.ErrorInvalidProvider
 	}
 
 	var externalID string
@@ -66,14 +65,14 @@ func (t *TransactionsServiceImpl) Create(context context.Context, incomingTransa
 		fmt.Println("sending withdraw")
 		externalID, err = paymentGateway.SendWithdrawal(transaction)
 	default:
-		return errors.New("invalid transaction type")
+		return constants.ErrorInvalidTransactionType
 	}
 
 	if err != nil {
 		// if the api call to the gateway fails, we hold the transaction
 		transaction.StatusHandle = constants.TRANSACTION_STATUS_HELD
 		t.TransactionsRepository.Create(&transaction)
-		return err
+		return constants.ErrorTransactionHeld
 	}
 
 	transaction.ExternalID = externalID
@@ -101,8 +100,6 @@ func (t *TransactionsServiceImpl) RetryHeldTransaction(context context.Context, 
 	// check if user has enough balance
 	usableBalance, err := t.BalanceService.GetUsableBalance(incomingTransaction.UserID)
 
-	fmt.Println("Usable balance", usableBalance)
-
 	if err != nil {
 		return err
 	}
@@ -128,7 +125,7 @@ func (t *TransactionsServiceImpl) RetryHeldTransaction(context context.Context, 
 		// if the user has enough balance, we update the transaction and send it to the gateway
 
 		if usableBalance < incomingTransaction.Amount {
-			return errors.New("insufficient balance")
+			return constants.ErrorInsufficientBalance
 		}
 	}
 
@@ -138,7 +135,7 @@ func (t *TransactionsServiceImpl) RetryHeldTransaction(context context.Context, 
 	if paymentGateway == nil {
 		incomingTransaction.StatusHandle = constants.TRANSACTION_STATUS_FAILED
 		t.TransactionsRepository.Update(incomingTransaction)
-		return errors.New("invalid provider")
+		return constants.ErrorInvalidProvider
 	}
 
 	var externalID string
@@ -151,12 +148,12 @@ func (t *TransactionsServiceImpl) RetryHeldTransaction(context context.Context, 
 		fmt.Println("sending withdraw")
 		externalID, err = paymentGateway.SendWithdrawal(*incomingTransaction)
 	default:
-		return errors.New("invalid transaction type")
+		return constants.ErrorInvalidTransactionType
 	}
 
 	if err != nil {
 		// if the api call to the gateway fails, we keep the transaction as held
-		return err
+		return constants.ErrorTransactionHeld
 	}
 
 	incomingTransaction.ExternalID = externalID

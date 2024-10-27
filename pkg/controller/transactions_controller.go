@@ -1,6 +1,8 @@
 package controller
 
 import (
+	constants "exinity-task/pkg/contants"
+	"exinity-task/pkg/helper"
 	"exinity-task/pkg/service"
 	"exinity-task/pkg/types"
 	"net/http"
@@ -19,12 +21,12 @@ func NewTransactionController(transactionService service.TransactionsService) *T
 func (controller *TransactionsController) Create(ctx *gin.Context) {
 	var incomingTransaction types.CreateTransactionRequest
 	if err := ctx.ShouldBindJSON(&incomingTransaction); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		helper.RespondWithError(ctx, constants.ErrorInvalidJSON)
 		return
 	}
 
 	if err := controller.TransactionsService.Create(ctx.Request.Context(), incomingTransaction); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		helper.RespondWithError(ctx, err)
 		return
 	}
 

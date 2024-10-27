@@ -30,7 +30,7 @@ func main() {
 
 	// Initialize services
 	balanceService := service.NewBalanceService(transactionRepository)
-	transactionService := service.NewTransactionService(transactionRepository, *paymentGatewayFactory, balanceService)
+	transactionService := service.NewTransactionService(transactionRepository, paymentGatewayFactory, balanceService)
 	webhookService := service.NewWebhookService(transactionRepository)
 	retryService := service.NewRetryService(transactionService)
 
