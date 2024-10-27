@@ -78,6 +78,14 @@ The system also allows the DB to be very easily swapped out by using GORM. To sw
 **6. Cloud Deployment:** The Go service has not been dockerized, which would allow for easier deployments on Cloud via Kubernetes.
 
 
+**To Run:**
+
+Update the Postgres DB connection string and then run:
+```
+go run cmd/exinity-task/main.go
+```
+
+
 
 
 ## **Curl**
