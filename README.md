@@ -30,17 +30,17 @@ Gateways are using the factory pattern to allow for quickly and easily adding su
 
 **Key Services:**
 
-**1.⁠ ⁠Transaction Service:** This service creates and updates transactions using the transaction repository. 
-**2.⁠ ⁠Balance Service:** This is used to keep track of the running total and is key in preventing the user from double spending (spending more than available running total).
-**3.⁠ ⁠Webhook Service:** This service asynchronously  receives events from external gateways to update the status of the transactions from PENDING to FAILED or COMPLETE.
-**4.⁠ ⁠Retry Service:** This service runs in a separate goroutine and periodically checks HELD transactions, which might be HELD due to unavailability of the external gateway, and then retries them so that they can be reprocessed.
+- **1.⁠ ⁠Transaction Service:** This service creates and updates transactions using the transaction repository. 
+- **2.⁠ ⁠Balance Service:** This is used to keep track of the running total and is key in preventing the user from double spending (spending more than available running total).
+- **3.⁠ ⁠Webhook Service:** This service asynchronously  receives events from external gateways to update the status of the transactions from PENDING to FAILED or COMPLETE.
+- **4.⁠ ⁠Retry Service:** This service runs in a separate goroutine and periodically checks HELD transactions, which might be HELD due to unavailability of the external gateway, and then retries them so that they can be reprocessed.
 
 **Transaction Lifecycle:**
 
-**PENDING:** This is when a transaction has been successfully sent to the external payment gateway and is awaiting response via the webhook. The pending withdrawals are special because the running total includes these in balance calculation so that the user can not double spend (create a withdrawal before the webhook from another has arrived).
-**HELD:** This is when the payment gateway is down or timing out.
-**COMPLETE:** When the webhook confirms that the transaction is complete.
-**FAILED:** This is when the webhook confirms that the external gateway couldnt process the transcation.
+- **PENDING:** This is when a transaction has been successfully sent to the external payment gateway and is awaiting response via the webhook. The pending withdrawals are special because the running total includes these in balance calculation so that the user can not double spend (create a withdrawal before the webhook from another has arrived).
+- **HELD:** This is when the payment gateway is down or timing out.
+- **COMPLETE:** When the webhook confirms that the transaction is complete.
+- **FAILED:** This is when the webhook confirms that the external gateway couldnt process the transcation.
 
 **Extensibility:**
 
